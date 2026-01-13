@@ -1,5 +1,50 @@
 @import "tailwindcss";
 
+@layer base {
+  :root {
+    --navy-50: #f0f4ff;
+    --navy-100: #e0e9ff;
+    --navy-200: #c7d8fe;
+    --navy-300: #a5b9fc;
+    --navy-400: #8b95f7;
+    --navy-500: #7078e0;
+    --navy-600: #5855e6;
+    --navy-700: #463fd8;
+    --navy-800: #3830c7;
+    --navy-900: #1e3a8a;
+  }
+}
+
+@layer utilities {
+  .text-navy-900 {
+    color: #1e3a8a;
+  }
+  .bg-navy-900 {
+    background-color: #1e3a8a;
+  }
+  .bg-navy-800 {
+    background-color: #3830c7;
+  }
+  .bg-navy-700 {
+    background-color: #463fd8;
+  }
+  .hover\:bg-navy-700:hover {
+    background-color: #463fd8;
+  }
+  .border-navy-800 {
+    border-color: #3830c7;
+  }
+  .border-navy-900 {
+    border-color: #1e3a8a;
+  }
+  .from-navy-50 {
+    --tw-gradient-from: #f0f4ff;
+  }
+  .to-white {
+    --tw-gradient-to: #ffffff;
+  }
+}
+
 body {
   @apply m-0;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
@@ -12,4 +57,19 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
+}
+
+/* Newspaper-specific utilities */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }

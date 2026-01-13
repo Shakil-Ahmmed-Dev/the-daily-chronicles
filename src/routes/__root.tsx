@@ -15,7 +15,9 @@ export const Route = createRootRoute({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'TanStack Start Starter',
+        title: 'The Daily Chronicles - National Newspaper',
+        name: 'description',
+        content: 'Your trusted source for national news, politics, business, technology, and cultural insights. Breaking news updates and in-depth analysis.',
       },
     ],
     links: [
