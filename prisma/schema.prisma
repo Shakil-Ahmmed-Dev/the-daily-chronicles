@@ -17,10 +17,6 @@ model User {
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
-
-  // Only staff members have accounts in this system
-  role        UserRole     @default(REPORTER)
-  isActive    Boolean      @default(true)
   articles    Article[]
   mediaAssets MediaAsset[]
 
@@ -79,13 +75,6 @@ model Verification {
 /// ----------------------------------------
 /// Newspaper domain models
 /// ----------------------------------------
-
-enum UserRole {
-  ADMIN
-  EDITOR
-  REPORTER
-  CONTRIBUTOR
-}
 
 enum ArticleStatus {
   DRAFT
