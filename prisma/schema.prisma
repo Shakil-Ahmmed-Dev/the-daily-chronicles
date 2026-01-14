@@ -20,6 +20,9 @@ model User {
   articles      Article[]
   mediaAssets   MediaAsset[]
 
+  members     Member[]
+  invitations Invitation[]
+
   @@unique([email])
   @@map("user")
 }
@@ -34,6 +37,8 @@ model Session {
   userAgent String?
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  activeOrganizationId String?
 
   @@unique([token])
   @@index([userId])
@@ -97,6 +102,7 @@ enum MediaType {
 }
 
 /// High-level sections of the newspaper (e.g. Politics, Sports)
+
 model Category {
   id          Int     @id @default(autoincrement())
   name        String
@@ -113,6 +119,7 @@ model Category {
 }
 
 /// More granular classification within sections
+
 model SubCategory {
   id          Int     @id @default(autoincrement())
   name        String
@@ -129,6 +136,7 @@ model SubCategory {
 }
 
 /// Free-form labels for articles
+
 model Tag {
   id          Int     @id @default(autoincrement())
   name        String
@@ -142,6 +150,7 @@ model Tag {
 }
 
 /// Junction table for many-to-many Article <-> Tag
+
 model ArticleTag {
   articleId Int
   tagId     Int
@@ -155,6 +164,7 @@ model ArticleTag {
 }
 
 /// Core editorial content
+
 model Article {
   id         Int           @id @default(autoincrement())
   title      String
@@ -189,6 +199,7 @@ model Article {
 }
 
 /// Assets such as images, video, audio for articles
+
 model MediaAsset {
   id      Int       @id @default(autoincrement())
   url     String
@@ -210,6 +221,7 @@ model MediaAsset {
 }
 
 /// Reader comments on articles
+
 model Comment {
   id      Int           @id @default(autoincrement())
   content String
@@ -234,6 +246,7 @@ model Comment {
 }
 
 /// A particular issue/edition of the newspaper (e.g. daily print)
+
 model Edition {
   id          Int      @id @default(autoincrement())
   title       String
@@ -249,6 +262,7 @@ model Edition {
 }
 
 /// Junction table for assigning articles to editions with ordering
+
 model ArticleEdition {
   articleId Int
   editionId Int
@@ -258,4 +272,49 @@ model ArticleEdition {
   edition Edition @relation(fields: [editionId], references: [id])
 
   @@id([articleId, editionId])
+}
+
+model Organization {
+  id          String       @id
+  name        String
+  slug        String
+  logo        String?
+  createdAt   DateTime
+  metadata    String?
+  members     Member[]
+  invitations Invitation[]
+
+  @@unique([slug])
+  @@map("organization")
+}
+
+model Member {
+  id             String       @id
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role           String       @default("member")
+  createdAt      DateTime
+
+  @@index([organizationId])
+  @@index([userId])
+  @@map("member")
+}
+
+model Invitation {
+  id             String       @id
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  email          String
+  role           String?
+  status         String       @default("pending")
+  expiresAt      DateTime
+  createdAt      DateTime     @default(now())
+  inviterId      String
+  user           User         @relation(fields: [inviterId], references: [id], onDelete: Cascade)
+
+  @@index([organizationId])
+  @@index([email])
+  @@map("invitation")
 }
