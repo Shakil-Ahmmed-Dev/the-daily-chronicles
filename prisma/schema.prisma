@@ -8,21 +8,17 @@ datasource db {
 }
 
 model User {
-  id            String    @id
+  id            String       @id
   name          String
   email         String
-  emailVerified Boolean   @default(false)
+  emailVerified Boolean      @default(false)
   image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
   sessions      Session[]
   accounts      Account[]
-
-  // Only staff members have accounts in this system
-  role        UserRole     @default(REPORTER)
-  isActive    Boolean      @default(true)
-  articles    Article[]
-  mediaAssets MediaAsset[]
+  articles      Article[]
+  mediaAssets   MediaAsset[]
 
   @@unique([email])
   @@map("user")
@@ -79,13 +75,6 @@ model Verification {
 /// ----------------------------------------
 /// Newspaper domain models
 /// ----------------------------------------
-
-enum UserRole {
-  ADMIN
-  EDITOR
-  REPORTER
-  CONTRIBUTOR
-}
 
 enum ArticleStatus {
   DRAFT
