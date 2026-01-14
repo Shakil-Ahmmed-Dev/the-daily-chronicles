@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client"
   output   = "../src/generated/prisma"
@@ -18,6 +17,12 @@ model User {
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
+
+  // Only staff members have accounts in this system
+  role        UserRole     @default(REPORTER)
+  isActive    Boolean      @default(true)
+  articles    Article[]
+  mediaAssets MediaAsset[]
 
   @@unique([email])
   @@map("user")
@@ -69,4 +74,199 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+/// ----------------------------------------
+/// Newspaper domain models
+/// ----------------------------------------
+
+enum UserRole {
+  ADMIN
+  EDITOR
+  REPORTER
+  CONTRIBUTOR
+}
+
+enum ArticleStatus {
+  DRAFT
+  REVIEW
+  PUBLISHED
+  ARCHIVED
+}
+
+enum CommentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum MediaType {
+  IMAGE
+  VIDEO
+  AUDIO
+  OTHER
+}
+
+/// High-level sections of the newspaper (e.g. Politics, Sports)
+model Category {
+  id          Int     @id @default(autoincrement())
+  name        String
+  slug        String  @unique
+  description String?
+  isFeatured  Boolean @default(false)
+  order       Int     @default(0)
+
+  subCategories SubCategory[]
+  articles      Article[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// More granular classification within sections
+model SubCategory {
+  id          Int     @id @default(autoincrement())
+  name        String
+  slug        String  @unique
+  description String?
+
+  categoryId Int?
+  category   Category? @relation(fields: [categoryId], references: [id])
+
+  articles Article[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// Free-form labels for articles
+model Tag {
+  id          Int     @id @default(autoincrement())
+  name        String
+  slug        String  @unique
+  description String?
+
+  articles ArticleTag[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// Junction table for many-to-many Article <-> Tag
+model ArticleTag {
+  articleId Int
+  tagId     Int
+
+  article Article @relation(fields: [articleId], references: [id])
+  tag     Tag     @relation(fields: [tagId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@id([articleId, tagId])
+}
+
+/// Core editorial content
+model Article {
+  id         Int           @id @default(autoincrement())
+  title      String
+  slug       String        @unique
+  excerpt    String?
+  content    String
+  status     ArticleStatus @default(DRAFT)
+  isBreaking Boolean       @default(false)
+  isFeatured Boolean       @default(false)
+  viewCount  Int           @default(0)
+
+  authorId String
+  author   User   @relation(fields: [authorId], references: [id])
+
+  categoryId Int?
+  category   Category? @relation(fields: [categoryId], references: [id])
+
+  subCategoryId Int?
+  subCategory   SubCategory? @relation(fields: [subCategoryId], references: [id])
+
+  featuredImageId Int?
+  featuredImage   MediaAsset? @relation("ArticleFeaturedImage", fields: [featuredImageId], references: [id])
+
+  tags     ArticleTag[]
+  comments Comment[]
+  editions ArticleEdition[]
+  media    MediaAsset[]     @relation("ArticleMedia")
+
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+/// Assets such as images, video, audio for articles
+model MediaAsset {
+  id      Int       @id @default(autoincrement())
+  url     String
+  type    MediaType
+  caption String?
+  altText String?
+  credit  String?
+
+  articleId Int?
+  article   Article? @relation("ArticleMedia", fields: [articleId], references: [id])
+
+  featuredIn Article[] @relation("ArticleFeaturedImage")
+
+  uploadedById String?
+  uploadedBy   User?   @relation(fields: [uploadedById], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// Reader comments on articles
+model Comment {
+  id      Int           @id @default(autoincrement())
+  content String
+  status  CommentStatus @default(PENDING)
+
+  articleId Int
+  article   Article @relation(fields: [articleId], references: [id])
+
+  // Third-party authenticated commenter (e.g. Google)
+  externalUserId   String
+  externalProvider String
+  authorName       String
+  authorAvatarUrl  String?
+
+  parentId Int?
+  parent   Comment?  @relation("CommentThread", fields: [parentId], references: [id])
+  replies  Comment[] @relation("CommentThread")
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+}
+
+/// A particular issue/edition of the newspaper (e.g. daily print)
+model Edition {
+  id          Int      @id @default(autoincrement())
+  title       String
+  slug        String   @unique
+  issueDate   DateTime @unique
+  description String?
+  isSpecial   Boolean  @default(false)
+
+  articles ArticleEdition[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+/// Junction table for assigning articles to editions with ordering
+model ArticleEdition {
+  articleId Int
+  editionId Int
+  order     Int @default(0)
+
+  article Article @relation(fields: [articleId], references: [id])
+  edition Edition @relation(fields: [editionId], references: [id])
+
+  @@id([articleId, editionId])
 }
