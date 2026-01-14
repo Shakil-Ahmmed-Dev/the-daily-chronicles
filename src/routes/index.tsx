@@ -1,6 +1,11 @@
 import { createFileRoute } from '@tanstack/react-router'
 import { useState, useEffect } from 'react'
 import { Search, Cloud, Menu, X, User, Share2, Bookmark, Play, TrendingUp, ChevronRight, Facebook, Twitter, Linkedin, Mail } from 'lucide-react'
+import { Alert, AlertDescription } from '@/components/ui/alert'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 
 export const Route = createFileRoute('/')({ component: App })
 
@@ -153,22 +158,22 @@ function BreakingNewsBanner() {
   }, [isPaused])
 
   return (
-    <div 
-      className="bg-red-600 text-white py-2 px-4 overflow-hidden relative"
+    <Alert 
+      className="bg-red-600 text-white border-red-600 rounded-none py-2 px-4 overflow-hidden relative"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
       <div className="flex items-center max-w-7xl mx-auto">
-        <span className="bg-red-800 px-3 py-1 rounded text-sm font-bold mr-4 whitespace-nowrap">
+        <Badge variant="destructive" className="bg-red-800 text-white mr-4 whitespace-nowrap">
           BREAKING
-        </span>
-        <div className="flex-1 overflow-hidden">
+        </Badge>
+        <AlertDescription className="flex-1 overflow-hidden text-white m-0">
           <p className="whitespace-nowrap animate-pulse">
             {breakingNews[currentIndex]}
           </p>
-        </div>
+        </AlertDescription>
       </div>
-    </div>
+    </Alert>
   )
 }
 
@@ -203,9 +208,9 @@ function Header() {
               <h1 className="text-3xl font-serif text-slate-900">The Daily Chronicles</h1>
               <nav className="hidden lg:flex space-x-6">
                 {['Politics', 'Business', 'Technology', 'Sports', 'Culture', 'World'].map((item) => (
-                  <button key={item} className="text-gray-700 hover:text-slate-900 font-medium transition-colors">
+                  <Button key={item} variant="ghost" className="text-gray-700 hover:text-slate-900 font-medium">
                     {item}
-                  </button>
+                  </Button>
                 ))}
               </nav>
             </div>
@@ -214,39 +219,42 @@ function Header() {
               {showSearch && (
                 <div className="flex items-center bg-gray-100 rounded-lg px-3 py-2">
                   <Search className="w-4 h-4 text-gray-500 mr-2" />
-                  <input
+                  <Input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search news..."
-                    className="bg-transparent outline-none text-sm w-64"
+                    className="bg-transparent border-0 shadow-none focus-visible:ring-0 w-64 h-auto py-0"
                     autoFocus
                   />
                 </div>
               )}
               
-              <button 
+              <Button 
+                variant="ghost"
+                size="icon"
                 onClick={() => setShowSearch(!showSearch)}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
               >
                 <Search className="w-5 h-5 text-gray-700" />
-              </button>
+              </Button>
               
-              <button 
+              <Button 
+                variant="ghost"
+                size="icon"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="lg:hidden p-2 hover:bg-gray-100 rounded-full transition-colors"
+                className="lg:hidden"
               >
                 {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-              </button>
+              </Button>
             </div>
           </div>
 
           {isMenuOpen && (
             <nav className="lg:hidden pb-4 border-t">
               {['Politics', 'Business', 'Technology', 'Sports', 'Culture', 'World'].map((item) => (
-                <button key={item} className="block w-full text-left py-2 px-4 hover:bg-gray-50">
+                <Button key={item} variant="ghost" className="w-full justify-start">
                   {item}
-                </button>
+                </Button>
               ))}
             </nav>
           )}
@@ -285,87 +293,95 @@ interface Video {
 function ArticleCard({ article, featured = false }: { article: Article; featured?: boolean }) {
   if (featured) {
     return (
-      <div className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow">
+      <Card className="overflow-hidden hover:shadow-md transition-shadow">
         <img src={article.image} alt={article.title} className="w-full h-64 object-cover" />
-        <div className="p-6">
+        <CardHeader>
           <div className="flex items-center justify-between mb-3">
-            <span className="text-xs font-bold text-slate-900 uppercase tracking-wide">{article.category}</span>
+            <Badge variant="outline" className="text-xs font-bold text-slate-900 uppercase tracking-wide">
+              {article.category}
+            </Badge>
             <span className="text-xs text-gray-500">{article.readTime}</span>
           </div>
-          <h2 className="text-2xl font-serif text-slate-900 mb-3">{article.title}</h2>
-          <p className="text-gray-600 mb-4 line-clamp-3">{article.excerpt}</p>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <User className="w-4 h-4 text-gray-500" />
-              <span className="text-sm text-gray-700">{article.author}</span>
-              <span className="text-sm text-gray-500">•</span>
-              <span className="text-sm text-gray-500">{article.date}</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <button className="p-1 hover:bg-gray-100 rounded transition-colors">
-                <Bookmark className="w-4 h-4 text-gray-500" />
-              </button>
-              <button className="p-1 hover:bg-gray-100 rounded transition-colors">
-                <Share2 className="w-4 h-4 text-gray-500" />
-              </button>
-            </div>
+          <CardTitle className="text-2xl font-serif text-slate-900 mb-3">{article.title}</CardTitle>
+          <CardDescription className="text-gray-600 mb-4 line-clamp-3">{article.excerpt}</CardDescription>
+        </CardHeader>
+        <CardFooter className="flex items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <User className="w-4 h-4 text-gray-500" />
+            <span className="text-sm text-gray-700">{article.author}</span>
+            <span className="text-sm text-gray-500">•</span>
+            <span className="text-sm text-gray-500">{article.date}</span>
           </div>
-        </div>
-      </div>
+          <div className="flex items-center space-x-2">
+            <Button variant="ghost" size="icon" className="h-8 w-8">
+              <Bookmark className="w-4 h-4 text-gray-500" />
+            </Button>
+            <Button variant="ghost" size="icon" className="h-8 w-8">
+              <Share2 className="w-4 h-4 text-gray-500" />
+            </Button>
+          </div>
+        </CardFooter>
+      </Card>
     )
   }
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-4 hover:shadow-md transition-all cursor-pointer">
-      <h3 className="font-serif text-lg text-slate-900 mb-2 line-clamp-2">{article.title}</h3>
-      <p className="text-sm text-gray-600 mb-3 line-clamp-2">{article.excerpt}</p>
-      <div className="flex items-center justify-between text-xs text-gray-500">
+    <Card className="hover:shadow-md transition-all cursor-pointer">
+      <CardHeader>
+        <CardTitle className="font-serif text-lg text-slate-900 mb-2 line-clamp-2">{article.title}</CardTitle>
+        <CardDescription className="text-sm text-gray-600 mb-3 line-clamp-2">{article.excerpt}</CardDescription>
+      </CardHeader>
+      <CardFooter className="flex items-center justify-between text-xs text-gray-500 pt-0">
         <span>{article.author}</span>
         <span>{article.time}</span>
-      </div>
-    </div>
+      </CardFooter>
+    </Card>
   )
 }
 
 function OpinionCard({ article }: { article: OpinionArticle }) {
   return (
-    <div className="bg-linear-to-r from-slate-50 to-white border-l-4 border-slate-900 rounded p-6">
-      <div className="flex items-start justify-between mb-3">
-        <div>
-          <h3 className="font-serif text-xl text-slate-900 mb-2">{article.title}</h3>
-          <div className="flex items-center space-x-2 text-sm text-gray-600">
-            <span className="font-medium">{article.author}</span>
-            <span>•</span>
-            <span>{article.role}</span>
-          </div>
-        </div>
-      </div>
-      <p className="text-gray-700 mb-3">{article.excerpt}</p>
-      <div className="flex items-center justify-between">
+    <Card className="bg-linear-to-r from-slate-50 to-white border-l-4 border-slate-900">
+      <CardHeader>
+        <CardTitle className="font-serif text-xl text-slate-900 mb-2">{article.title}</CardTitle>
+        <CardDescription className="flex items-center space-x-2 text-sm text-gray-600">
+          <span className="font-medium">{article.author}</span>
+          <span>•</span>
+          <span>{article.role}</span>
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <p className="text-gray-700 mb-3">{article.excerpt}</p>
+      </CardContent>
+      <CardFooter className="flex items-center justify-between pt-0">
         <span className="text-xs text-gray-500">{article.time}</span>
         <ChevronRight className="w-4 h-4 text-slate-900" />
-      </div>
-    </div>
+      </CardFooter>
+    </Card>
   )
 }
 
 function VideoCard({ video }: { video: Video }) {
   return (
-    <div className="relative group cursor-pointer">
-      <div className="aspect-video bg-gray-200 rounded-lg overflow-hidden">
+    <Card className="relative group cursor-pointer overflow-hidden p-0">
+      <div className="aspect-video bg-gray-200 overflow-hidden relative">
         <img src={video.thumbnail} alt={video.title} className="w-full h-full object-cover" />
         <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all flex items-center justify-center">
           <Play className="w-12 h-12 text-white opacity-0 group-hover:opacity-100 transition-all transform scale-90 group-hover:scale-100" />
         </div>
-        <div className="absolute bottom-2 right-2 bg-black bg-opacity-75 text-white text-xs px-2 py-1 rounded">
+        <Badge className="absolute bottom-2 right-2 bg-black bg-opacity-75 text-white border-0">
           {video.duration}
-        </div>
+        </Badge>
       </div>
-      <h4 className="mt-2 font-serif text-sm text-slate-900 line-clamp-2 group-hover:text-slate-700 transition-colors">
-        {video.title}
-      </h4>
-      <p className="text-xs text-gray-500 mt-1">{video.views} views</p>
-    </div>
+      <CardHeader className="p-4">
+        <CardTitle className="font-serif text-sm text-slate-900 line-clamp-2 group-hover:text-slate-700 transition-colors">
+          {video.title}
+        </CardTitle>
+        <CardDescription className="text-xs text-gray-500 mt-1">
+          {video.views} views
+        </CardDescription>
+      </CardHeader>
+    </Card>
   )
 }
 
@@ -437,18 +453,22 @@ function App() {
             </section>
 
             {/* Weather Widget */}
-            <section className="bg-white border border-gray-200 rounded-lg p-6">
-              <h3 className="font-serif text-lg text-slate-900 mb-4 flex items-center">
-                <Cloud className="w-5 h-5 mr-2" />
-                Weather
-              </h3>
-              <div className="text-center">
-                <div className="text-4xl mb-2">{weatherData.icon}</div>
-                <div className="text-2xl font-bold text-slate-900">{weatherData.temperature}°F</div>
-                <div className="text-gray-600">{weatherData.condition}</div>
-                <div className="text-sm text-gray-500 mt-2">{weatherData.location}</div>
-              </div>
-            </section>
+            <Card>
+              <CardHeader>
+                <CardTitle className="font-serif text-lg text-slate-900 mb-4 flex items-center">
+                  <Cloud className="w-5 h-5 mr-2" />
+                  Weather
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center">
+                  <div className="text-4xl mb-2">{weatherData.icon}</div>
+                  <div className="text-2xl font-bold text-slate-900">{weatherData.temperature}°F</div>
+                  <CardDescription className="text-gray-600">{weatherData.condition}</CardDescription>
+                  <CardDescription className="text-sm text-gray-500 mt-2">{weatherData.location}</CardDescription>
+                </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
 
@@ -476,7 +496,7 @@ function App() {
       {/* Footer */}
       <footer className="bg-slate-900 text-white">
         <div className="max-w-7xl mx-auto px-4 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
             <div>
               <h3 className="font-serif text-2xl mb-4 text-white">The Daily Chronicles</h3>
               <p className="text-slate-400 text-sm">
@@ -511,18 +531,26 @@ function App() {
             <div>
               <h4 className="font-bold mb-4 text-white">Follow Us</h4>
               <div className="flex space-x-4 mb-6">
-                <a href="#" className="p-2 bg-slate-800 rounded-full hover:bg-slate-700 transition-colors text-white">
-                  <Facebook className="w-5 h-5" />
-                </a>
-                <a href="#" className="p-2 bg-slate-800 rounded-full hover:bg-slate-700 transition-colors text-white">
-                  <Twitter className="w-5 h-5" />
-                </a>
-                <a href="#" className="p-2 bg-slate-800 rounded-full hover:bg-slate-700 transition-colors text-white">
-                  <Linkedin className="w-5 h-5" />
-                </a>
-                <a href="#" className="p-2 bg-slate-800 rounded-full hover:bg-slate-700 transition-colors text-white">
-                  <Mail className="w-5 h-5" />
-                </a>
+                <Button variant="outline" size="icon" className="bg-slate-800 border-slate-800 hover:bg-slate-700 text-white rounded-full" asChild>
+                  <a href="#">
+                    <Facebook className="w-5 h-5" />
+                  </a>
+                </Button>
+                <Button variant="outline" size="icon" className="bg-slate-800 border-slate-800 hover:bg-slate-700 text-white rounded-full" asChild>
+                  <a href="#">
+                    <Twitter className="w-5 h-5" />
+                  </a>
+                </Button>
+                <Button variant="outline" size="icon" className="bg-slate-800 border-slate-800 hover:bg-slate-700 text-white rounded-full" asChild>
+                  <a href="#">
+                    <Linkedin className="w-5 h-5" />
+                  </a>
+                </Button>
+                <Button variant="outline" size="icon" className="bg-slate-800 border-slate-800 hover:bg-slate-700 text-white rounded-full" asChild>
+                  <a href="#">
+                    <Mail className="w-5 h-5" />
+                  </a>
+                </Button>
               </div>
               <p className="text-sm text-slate-400">
                 Subscribe to our newsletter for daily updates
