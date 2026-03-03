@@ -1,2 +1,17 @@
+@import "@fontsource-variable/playfair-display";
+@import "@fontsource-variable/inter/opsz.css";
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Playfair Display Variable", serif;
+}
+
+body {
+  font-family: "Inter Variable", sans-serif;
+}
