@@ -8,6 +8,13 @@
       "when": 1772859873666,
       "tag": "0000_flawless_red_hulk",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1772884357372,
+      "tag": "0001_typical_killraven",
+      "breakpoints": true
     }
   ]
 }
