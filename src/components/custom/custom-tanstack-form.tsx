@@ -9,9 +9,10 @@ export const { fieldContext, formContext, useFieldContext } =
 export const CFInputTextField = ({
   label,
   type = "text",
+  ...props
 }: {
   label?: string;
-  type: "text" | "email" | "password";
+  type?: "text" | "email" | "password";
 } & React.ComponentProps<typeof Input>) => {
   const field = useFieldContext<string>();
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
@@ -28,6 +29,7 @@ export const CFInputTextField = ({
           onBlur={field.handleBlur}
           onChange={(e) => field.handleChange(e.target.value)}
           aria-invalid={isInvalid}
+          {...props}
         />
       ) : (
         <Input
@@ -38,6 +40,7 @@ export const CFInputTextField = ({
           onBlur={field.handleBlur}
           onChange={(e) => field.handleChange(e.target.value)}
           aria-invalid={isInvalid}
+          {...props}
         />
       )}
       {isInvalid && <FieldError errors={field.state.meta.errors} />}
@@ -47,6 +50,7 @@ export const CFInputTextField = ({
 
 export const CFInputNumberField = ({
   label,
+  ...props
 }: { label?: string } & React.ComponentProps<typeof Input>) => {
   const field = useFieldContext<number>();
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
@@ -56,12 +60,14 @@ export const CFInputNumberField = ({
         {label || `${field.name.charAt(0).toUpperCase() + field.name.slice(1)}`}
       </FieldLabel>
       <Input
+        type="number"
         id={field.name}
         name={field.name}
         value={field.state.value}
         onBlur={field.handleBlur}
         onChange={(e) => field.handleChange(e.target.valueAsNumber)}
         aria-invalid={isInvalid}
+        {...props}
       />
       {isInvalid && <FieldError errors={field.state.meta.errors} />}
     </Field>
