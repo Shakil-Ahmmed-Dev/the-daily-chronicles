@@ -22,9 +22,9 @@ export default function SignInForm() {
   return (
     <form
       id="sign-in-form"
-      onSubmit={(e) => {
+      onSubmit={async (e) => {
         e.preventDefault();
-        signInForm.handleSubmit();
+        await signInForm.handleSubmit();
       }}
     >
       <FieldGroup>
