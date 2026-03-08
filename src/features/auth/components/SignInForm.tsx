@@ -23,16 +23,26 @@ export default function SignInForm() {
     <form
       id="sign-in-form"
       onSubmit={(e) => {
-        e.preventDefault;
+        e.preventDefault();
         signInForm.handleSubmit();
       }}
     >
       <FieldGroup>
         <signInForm.AppField name="email">
-          {(emailField) => <emailField.CFInputTextField type="email" />}
+          {(emailField) => (
+            <emailField.CFInputTextField
+              type="email"
+              placeholder="mail@example.com"
+            />
+          )}
         </signInForm.AppField>
         <signInForm.AppField name="password">
-          {(passwordField) => <passwordField.CFInputTextField type="password" />}
+          {(passwordField) => (
+            <passwordField.CFInputTextField
+              type="password"
+              placeholder="Enter your password"
+            />
+          )}
         </signInForm.AppField>
 
         <ActionButton action={signInForm.handleSubmit}>Sign In</ActionButton>
