@@ -1,6 +1,5 @@
 import { type ComponentProps, type ReactNode, useTransition } from "react"
 import { Button } from "@/components/ui/button"
-import { toast } from "sonner"
 import { LoadingSwap } from "@/components/ui/loading-swap"
 import {
   AlertDialog,
@@ -20,7 +19,7 @@ export function ActionButton({
   areYouSureDescription = "This action cannot be undone.",
   ...props
 }: ComponentProps<typeof Button> & {
-  action: () => Promise<{ error: boolean; message?: string }>
+  action: () => Promise<void>
   requireAreYouSure?: boolean
   areYouSureDescription?: ReactNode
 }) {
@@ -28,8 +27,7 @@ export function ActionButton({
 
   function performAction() {
     startTransition(async () => {
-      const data = await action()
-      if (data.error) toast.error(data.message ?? "Error")
+      await action()
     })
   }
 
