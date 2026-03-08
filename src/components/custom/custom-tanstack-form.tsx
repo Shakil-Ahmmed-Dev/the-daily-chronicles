@@ -11,7 +11,7 @@ export const CFInputTextField = ({
   type = "text",
 }: {
   label?: string;
-  type: "text" | "email" | "password";
+  type?: "text" | "email" | "password";
 } & React.ComponentProps<typeof Input>) => {
   const field = useFieldContext<string>();
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
