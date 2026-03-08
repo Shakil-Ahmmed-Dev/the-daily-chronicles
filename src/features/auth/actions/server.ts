@@ -11,6 +11,7 @@ export const signUpEmailServer = createServerFn({
             name: data.name,
             email: data.email,
             password: data.password,
+            callbackURL: "/admin/dashboard"
         }
     })
 });
@@ -19,7 +20,10 @@ export const signInEmailServer = createServerFn({
     method: "POST"
 }).inputValidator(signInEmailServerSchema).handler(async ({ data }) => {
     await auth.api.signInEmail({
-        body: data
+        body: {
+            ...data,
+            callbackURL: "/admin/dashboard"
+        }
     });
 });
 
