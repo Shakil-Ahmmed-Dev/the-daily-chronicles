@@ -11,7 +11,7 @@ export const CFInputTextField = ({
   type = "text",
 }: {
   label?: string;
-  type: "text" | "email" | "password";
+  type?: "text" | "email" | "password";
 } & React.ComponentProps<typeof Input>) => {
   const field = useFieldContext<string>();
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid;
@@ -56,6 +56,7 @@ export const CFInputNumberField = ({
         {label || `${field.name.charAt(0).toUpperCase() + field.name.slice(1)}`}
       </FieldLabel>
       <Input
+        type="number"
         id={field.name}
         name={field.name}
         value={field.state.value}
