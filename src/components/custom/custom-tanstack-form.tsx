@@ -18,7 +18,7 @@ export const CFInputTextField = ({
   return (
     <Field data-invalid={isInvalid}>
       <FieldLabel htmlFor={field.name}>
-        {label || `${field.name.charAt(0) + field.name.slice(1)}`}
+        {label || `${field.name.charAt(0).toUpperCase() + field.name.slice(1)}`}
       </FieldLabel>
       {type === "password" ? (
         <PasswordInput
@@ -53,7 +53,7 @@ export const CFInputNumberField = ({
   return (
     <Field data-invalid={isInvalid}>
       <FieldLabel htmlFor={field.name}>
-        {label || `${field.name.charAt(0) + field.name.slice(1)}`}
+        {label || `${field.name.charAt(0).toUpperCase() + field.name.slice(1)}`}
       </FieldLabel>
       <Input
         id={field.name}
