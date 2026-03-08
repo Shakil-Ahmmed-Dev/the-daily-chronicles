@@ -19,12 +19,13 @@ export const signUpEmailServer = createServerFn({
 export const signInEmailServer = createServerFn({
     method: "POST"
 }).inputValidator(signInEmailServerSchema).handler(async ({ data }) => {
-    await auth.api.signInEmail({
+    const res = await auth.api.signInEmail({
         body: {
             ...data,
             callbackURL: "/admin/dashboard"
         }
     });
+    return res;
 });
 
 export const signOutServer = createServerFn().handler(async () => {
